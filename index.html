@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eid Outfit Roast AI 😂🔥</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div class="container" id="step1">
+    <h2>Choose Your Vibe 😎</h2>
+    <button onclick="selectType('male')">Mama's Boy / Sigma Male</button>
+    <button onclick="selectType('female')">Papa ki Pari / Queen</button>
+    <button onclick="selectType('general')">Me Nahi Bataunga</button>
+  </div>
+
+  <div class="container hidden" id="step2">
+    <h2>Upload Your Eid Outfit 📸</h2>
+    <input type="file" accept="image/*" onchange="loadImage(event)">
+
+    <div class="disclaimer">
+      ⚠️ We don't store images on server. They're processed locally.<br>
+      ⚠️ ہم تصاویر محفوظ نہیں کرتے، یہ صرف آپ کے فون پر پروسیس ہوتی ہیں۔
+    </div>
+
+    <div id="result" class="hidden">
+      <div class="card" id="shareCard">
+        <img id="preview">
+        <p id="roastText"></p>
+      </div>
+
+      <button onclick="shareImage()">Share 🔥</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+
+  <!-- html2canvas CDN -->
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+</body>
+
+</html>
