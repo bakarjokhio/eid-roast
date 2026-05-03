@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Eid Outfit Roast AI 😂🔥</title>
-
+  <link rel="icon" type="image/png" href="favicon.png">
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -13,42 +13,58 @@
 
   <div class="container" id="step1">
     <h2>Choose Your Vibe 😎</h2>
-    <button onclick="selectType('male')">Mama's Boy / Sigma Male</button>
-    <button onclick="selectType('female')">Papa ki Pari / Queen</button>
-    <button onclick="selectType('general')">Me Nahi Bataunga</button>
+    <div class="content">
+      <button id="maleBtn" onclick="selectType('male')"></button>
+      <button id="femaleBtn" onclick="selectType('female')"></button>
+      <button id="generalBtn" onclick="selectType('general')"></button>
+    </div>
   </div>
 
   <div class="container hidden" id="step2">
     <h2>Upload Your Eid Outfit 📸</h2>
-    <input type="file" accept="image/*" onchange="loadImage(event)">
+    <div class="content">
+      <input type="file" accept="image/*" onchange="loadImage(event)">
 
-    <div class="disclaimer">
-      ⚠️ We don't store images on server. They're processed locally.<br>
-      ⚠️ ہم تصاویر محفوظ نہیں کرتے، یہ صرف آپ کے فون پر پروسیس ہوتی ہیں۔
+      <div class="disclaimer">
+        ⚠️ We don't store images on server. They're processed locally.<br>
+        ⚠️ ہم تصاویر محفوظ نہیں کرتے، یہ صرف آپ کے فون پر پروسیس ہوتی ہیں۔
+      </div>
     </div>
 
     <div id="result" class="hidden">
       <div class="card" id="shareCard">
         <img id="preview">
         <p id="roastText"></p>
+
       </div>
-      
+
       <div id="colorOptions" class="hidden">
-  <p>Choose Background 🎨</p>
+        <p>
+          Choose Background 🎨
+        </p>
 
-  <div class="color-picker">
-    <span class="color-circle" data-color="black" style="background:black;"></span>
-    <span class="color-circle" data-color="white" style="background:white;"></span>
-    <span class="color-circle" id="dominantColor"></span>
-    <span class="color-circle" id="oppositeColor"></span>
-  </div>
-</div>
-
+        <div class="color-picker">
+          <span class="color-circle" data-color="black" style="background:black;"></span>
+          <span class="color-circle" data-color="white" style="background:white;"></span>
+          <span class="color-circle" id="dominantColor"></span>
+          <span class="color-circle" id="oppositeColor"></span>
+        </div>
+      </div>
+      <div class="action-buttons">
       <button onclick="shareImage()">Share 🔥</button>
+      <button onclick="downloadImage()">Download 📥</button>
+      </div>
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <script src="data/genders.js"></script>
+  <script src="data/compliments.js"></script>
+  <!-- TensorFlow.js -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+
+<!-- COCO SSD Object Detection -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+  <script src="js/script.js"></script>
 
   <!-- html2canvas CDN -->
   <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>

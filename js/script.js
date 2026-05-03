@@ -1,6 +1,27 @@
 let userType = "general";
 let dominantColorGlobal = "rgb(0,0,0)";
 let oppositeColorGlobal = "rgb(255,255,255)";
+let aiModel = null;
+
+async function loadAIModel() {
+  aiModel = await cocoSsd.load();
+  console.log("AI model loaded 🚀");
+}
+
+loadAIModel();
+
+async function detectHuman(imgElement) {
+  if (!aiModel) {
+    console.log("Model still loading...");
+    return null;
+  }
+
+  const predictions = await aiModel.detect(imgElement);
+
+  console.log("AI Detections:", predictions);
+
+  return predictions.some(prediction => prediction.class === "person");
+}
 
 function selectType(type) {
   userType = type;
@@ -20,11 +41,28 @@ function loadImage(event) {
     const img = document.getElementById("preview");
     img.src = reader.result;
 
-    img.onload = function () {
+    img.onload = async function () {
       getDominantColor(img);
+
+      // 🧠 Detect human
+      const hasHuman = await detectHuman(img);
+
+      if (hasHuman === true) {
+        // Human detected
+        generateRoast();
+
+      } else if (hasHuman === false) {
+        // No human detected
+        generateNoHumanRoast();
+
+      } else {
+        // AI still loading
+        // fallback to user's selected category
+        generateRoast();
+      }
+
+      document.getElementById("result").classList.remove("hidden");
     };
-    generateRoast();
-    document.getElementById("result").classList.remove("hidden");
   }
 
   reader.readAsDataURL(file);
@@ -76,39 +114,6 @@ function getDominantColor(img) {
   // Default apply
   applyCardColor(dominantColorGlobal);
 }
-/** function getDominantColor(img) {
-const canvas = document.createElement("canvas");
-const ctx = canvas.getContext("2d");
-
-canvas.width = img.width;
-canvas.height = img.height;
-
-ctx.drawImage(img, 0, 0);
-
-const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-
-const colorMap = {};
-let maxCount = 0;
-let dominantColor = "rgb(0,0,0)";
-
-// Loop through pixels (skip some for performance)
-for (let i = 0; i < data.length; i += 40) {
-const r = data[i];
-const g = data[i + 1];
-const b = data[i + 2];
-
-const key = `${r},${g},${b}`;
-
-colorMap[key] = (colorMap[key] || 0) + 1;
-
-if (colorMap[key] > maxCount) {
-maxCount = colorMap[key];
-dominantColor = `rgb(${key})`;
-}
-}
-
-applyCardColor(dominantColor);
-} **/
 
 function applyCardColor(color) {
   const card = document.getElementById("shareCard");
@@ -151,37 +156,16 @@ function getContrastColor(rgb) {
   return brightness > 125 ? "black": "white";
 }
 
-// 🎯 DATASET (Roasts)
-
-const roasts = {
-  male: [
-    "Bhai outfit theek hai... lekin confidence zyada pehna hua hai 😭🔥",
-    "Sigma banne nikle thay... mohallay ka hero ban gaye 💀",
-    "Drip level: Shaadi mein free khanay wala guest 🍗",
-    "MashAllah... Ammi ne zabardasti tayar kiya hai na? 😂",
-    "Kapray ache hain... pose thora update kar lo boss 😎"
-  ],
-
-  female: [
-    "MashAllah queen vibes 👑 lekin thori over killing ho gayi 😭🔥",
-    "Aunty approved ✔️ Rishta incoming 💍",
-    "Itni tayyari... Chand bhi jealous ho gaya 🌙",
-    "Outfit 10/10, nazrein control mein rakho logon ki 😂",
-    "Pookie princess mode activated 🐣✨"
-  ],
-
-  general: [
-    "Eid outfit ya fashion experiment? 🤔🔥",
-    "Confidence 100%, logic 0% 😭",
-    "Chand Raat energy still loading… ⏳",
-    "Yeh style hai ya statement? 😂",
-    "Log dekh rahe hain… samajh nahi aa raha 😎"
-  ]
-};
-
 function generateRoast() {
   const list = roasts[userType];
   const random = list[Math.floor(Math.random() * list.length)];
+  document.getElementById("roastText").innerText = random;
+}
+
+function generateNoHumanRoast() {
+  const list = roasts.noHuman;
+  const random = list[Math.floor(Math.random() * list.length)];
+
   document.getElementById("roastText").innerText = random;
 }
 
@@ -211,6 +195,26 @@ function shareImage() {
   });
 }
 
+// 📥 DOWNLOAD FUNCTION
+
+function downloadImage() {
+  const card = document.getElementById("shareCard");
+
+  html2canvas(card, {
+    backgroundColor: null
+  }).then(canvas => {
+
+    const link = document.createElement("a");
+
+    link.download = "eid-roast.png";
+    link.href = canvas.toDataURL("image/png");
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  });
+}
+
 window.onpopstate = function (event) {
   // If going back, show step1 again
   document.getElementById("step1").classList.remove("hidden");
@@ -222,13 +226,13 @@ window.onpopstate = function (event) {
 
 document.addEventListener("click", function (e) {
   if (e.target.classList.contains("color-circle")) {
-    
-    document.querySelectorAll(".color-circle").forEach(el => {
-            el.classList.remove("active");
-        });
 
-        // ✅ Add active to selected
-        e.target.classList.add("active");
+    document.querySelectorAll(".color-circle").forEach(el => {
+      el.classList.remove("active");
+    });
+
+    // ✅ Add active to selected
+    e.target.classList.add("active");
 
 
     let color = e.target.dataset.color;
@@ -241,3 +245,14 @@ document.addEventListener("click", function (e) {
     applyCardColor(color);
   }
 });
+
+function getRandomText(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function setRandomButtonTexts() {
+  document.getElementById("maleBtn").innerText = getRandomText(buttonTexts.male);
+  document.getElementById("femaleBtn").innerText = getRandomText(buttonTexts.female);
+  document.getElementById("generalBtn").innerText = getRandomText(buttonTexts.general);
+}
+document.addEventListener("DOMContentLoaded", setRandomButtonTexts);
