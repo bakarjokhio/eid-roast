@@ -1,11 +1,74 @@
 let userType = "general";
 let dominantColorGlobal = "rgb(0,0,0)";
 let oppositeColorGlobal = "rgb(255,255,255)";
+
 let aiModel = null;
+let aiLoaded = false;
+
 
 async function loadAIModel() {
-  aiModel = await cocoSsd.load();
-  console.log("AI model loaded 🚀");
+
+  const progressFill =
+  document.getElementById("progressFill");
+
+  const progressText =
+  document.getElementById("progressText");
+
+  try {
+
+    // Fake smooth progress animation
+    let progress = 0;
+
+    const interval = setInterval(() => {
+
+      if (progress < 99) {
+        progress += 1;
+
+        progressFill.style.width =
+        progress + "%";
+
+        progressText.innerText =
+        "Loading AI Model... " + progress + "%";
+      }
+
+    },
+      250);
+
+    // Actual AI loading
+    aiModel = await cocoSsd.load();
+
+    clearInterval(interval);
+
+    progressFill.style.width = "100%";
+
+    progressText.innerText =
+    "AI Fully Loaded ✅";
+
+    aiLoaded = true;
+
+    console.log("AI model loaded 🚀");
+
+
+    setTimeout(() => {
+
+  document.querySelector(".ai-loader-title")
+    .innerText = "🧠 Powered by AI Vision Model";
+
+  document.querySelector(".ai-loader-subtitle")
+    .classList.add("hide-ai-element");
+
+  document.querySelector(".progress-bar")
+    .classList.add("hide-ai-element");
+
+}, 1200);
+
+  } catch (error) {
+
+    console.error(error);
+
+    progressText.innerText =
+    "Failed to load AI ❌";
+  }
 }
 
 loadAIModel();
@@ -20,7 +83,12 @@ async function detectHuman(imgElement) {
 
   console.log("AI Detections:", predictions);
 
-  return predictions.some(prediction => prediction.class === "person");
+  return {
+    hasHuman: predictions.some(
+      prediction => prediction.class === "person"
+    ),
+    predictions: predictions
+  };
 }
 
 function selectType(type) {
@@ -34,6 +102,14 @@ function selectType(type) {
 }
 
 function loadImage(event) {
+  if (!aiLoaded) {
+
+    alert(
+      "⚠️ AI is still loading. \n\n" +
+      "Image will still work, but for best detection accuracy please wait until AI fully loads."
+    );
+  }
+
   const file = event.target.files[0];
   const reader = new FileReader();
 
@@ -45,7 +121,10 @@ function loadImage(event) {
       getDominantColor(img);
 
       // 🧠 Detect human
-      const hasHuman = await detectHuman(img);
+      const detectionResult = await detectHuman(img);
+
+      const hasHuman = detectionResult?.hasHuman;
+      const predictions = detectionResult?.predictions || [];
 
       if (hasHuman === true) {
         // Human detected
@@ -53,7 +132,7 @@ function loadImage(event) {
 
       } else if (hasHuman === false) {
         // No human detected
-        generateNoHumanRoast();
+        generateNoHumanRoast(predictions);
 
       } else {
         // AI still loading
@@ -162,11 +241,49 @@ function generateRoast() {
   document.getElementById("roastText").innerText = random;
 }
 
-function generateNoHumanRoast() {
-  const list = roasts.noHuman;
-  const random = list[Math.floor(Math.random() * list.length)];
+function generateNoHumanRoast(predictions) {
 
-  document.getElementById("roastText").innerText = random;
+  // Animals we want to detect
+  const animalClasses = [
+    "cow",
+    "sheep",
+    "giraffe",
+    "camel",
+    "goat"
+  ];
+
+  // Check if detected objects contain one of these animals
+  const detectedAnimal = predictions.find(prediction =>
+    animalClasses.includes(prediction.class)
+  );
+
+  let selectedRoast;
+
+  // 🐄 Animal detected
+  if (detectedAnimal) {
+
+    console.log("Animal detected:", detectedAnimal.class);
+
+    const list = roasts.animals;
+
+    selectedRoast =
+    list[Math.floor(Math.random() * list.length)];
+
+  }
+
+  // 🪑 Non-living / random object
+  else {
+
+    console.log("No target animal detected");
+
+    const list = roasts.noHuman;
+
+    selectedRoast =
+    list[Math.floor(Math.random() * list.length)];
+  }
+
+  document.getElementById("roastText").innerText =
+  selectedRoast;
 }
 
 // 📤 SHARE FUNCTION

@@ -22,8 +22,31 @@
 
   <div class="container hidden" id="step2">
     <h2>Upload Your Eid Outfit 📸</h2>
+
     <div class="content">
+      <div id="aiLoaderBox" class="ai-loader-box">
+
+        <div class="ai-loader-title">
+          🧠 AI Vision Model Loading...
+        </div>
+
+        <div class="ai-loader-subtitle">
+          For best results, wait until AI fully loads before uploading image.
+        </div>
+
+        <div class="progress-bar">
+          <div id="progressFill" class="progress-fill"></div>
+        </div>
+
+        <div id="progressText" class="progress-text">
+          Initializing AI...
+        </div>
+
+      </div>
+      
+      <div>
       <input type="file" accept="image/*" onchange="loadImage(event)">
+      </div>
 
       <div class="disclaimer">
         ⚠️ We don't store images on server. They're processed locally.<br>
@@ -51,8 +74,8 @@
         </div>
       </div>
       <div class="action-buttons">
-      <button onclick="shareImage()">Share 🔥</button>
-      <button onclick="downloadImage()">Download 📥</button>
+        <button onclick="shareImage()">Share 🔥</button>
+        <button onclick="downloadImage()">Download 📥</button>
       </div>
     </div>
   </div>
@@ -60,10 +83,10 @@
   <script src="data/genders.js"></script>
   <script src="data/compliments.js"></script>
   <!-- TensorFlow.js -->
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
 
-<!-- COCO SSD Object Detection -->
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+  <!-- COCO SSD Object Detection -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
   <script src="js/script.js"></script>
 
   <!-- html2canvas CDN -->
