@@ -373,3 +373,13 @@ function setRandomButtonTexts() {
   document.getElementById("generalBtn").innerText = getRandomText(buttonTexts.general);
 }
 document.addEventListener("DOMContentLoaded", setRandomButtonTexts);
+
+window.addEventListener("load", () => {
+  const loader = document.getElementById("appLoader");
+
+  loader.classList.add("hide");
+
+  setTimeout(() => {
+    loader.style.display = "none";
+  }, 400);
+});
