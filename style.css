@@ -38,7 +38,7 @@ body {
 .card-box {
   width: 100%;
   max-width: 520px;
-  margin: 30px;
+  margin: 16px;
 }
 
 
@@ -185,6 +185,7 @@ body {
 }
 
 button {
+  min-width: 140px;
   padding: 12px 18px;
   margin: 10px;
   border: none;
