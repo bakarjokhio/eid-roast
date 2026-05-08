@@ -4,7 +4,7 @@ html, body {
 }
 body {
   font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #0f2027, #2c5364);
+  background: linear-gradient(#0f2027, #2c5364, #0f2027);
   color: white;
   text-align: center;
   margin: 0;
@@ -34,6 +34,7 @@ body {
   align-items: center;
   /* horizontal center */
 }
+
 
 .card-box {
   width: 100%;
@@ -182,6 +183,14 @@ body {
   margin-top: 6px;
   font-size: 12px;
   opacity: 0.75;
+}
+
+.analytics-note {
+  display: block;
+  font-size: 11px;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.5;
+  opacity: 0.9;
 }
 
 button {
