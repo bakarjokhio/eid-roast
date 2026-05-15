@@ -4,7 +4,14 @@ html, body {
 }
 body {
   font-family: Arial, sans-serif;
-  background: linear-gradient(#0f2027, #2c5364, #0f2027);
+  background:
+radial-gradient(circle at 20% 20%, rgba(44,83,100,0.35), transparent 35%),
+radial-gradient(circle at 80% 80%, rgba(32,58,67,0.35), transparent 35%),
+linear-gradient(135deg, #0f2027, #141e30);
+
+background-attachment: fixed;
+background-color: #141e30;
+
   color: white;
   text-align: center;
   margin: 0;
@@ -14,6 +21,7 @@ body {
 
   align-items: center;
 }
+
 
 .container {
   padding: 20px;
